@@ -8,7 +8,7 @@ sock.bind(('', TCP_PORT))
 sock.listen(1)
 conn, addr = sock.accept()
 
-print ('connected:', addr)
+print('connected:', addr)
 
 while True:
     data = conn.recv(1024)
