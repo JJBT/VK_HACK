@@ -1,28 +1,25 @@
-import cv2
+
 import numpy as np
-from PIL import Image
-from keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
-import io
+import cv2
 import os
-
-from google.cloud import vision
-from google.cloud.vision import types
+from PIL import Image
 
 
-# face_cascades = cv2.CascadeClassifier('cascade_frontal_face_default.xml')
+def pipeline_image_recognizer(image_path):
 
-client = vision.ImageAnnotatorClient()
+    face_cascades = cv2.CascadeClassifier('cascade_frontal_face_default.xml')
+    recognizer = cv2.face.LBPHFaceRecognizer_create(1, 8, 8, 8, 123)
+    recognizer.read('recognizer.xml')
 
-file_name = 'C:/Users/Vladimyr/Desktop/photo_test_image.jpg'
+    person_label_predicted = -1
+    labels_to_names = {-1: 'unknown', 0: 'chaikovsky', 1: 'rahmaninov', 2: 'shostakovich'}
+    
+    image = np.array(Image.open(image_path).convert('L'), 'uint8')
+    face = face_cascades.detectMultiScale(image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
-with open(file_name, 'rb') as image_file:
-    content = image_file.read()
+    for (x_margin, y_margin, face_width, face_height) in face:
+        person_label_predicted, = \
+            recognizer.predict(image[y_margin: y_margin + face_height, x_margin: x_margin + face_width])
 
-image = types.Image(content=content)
+    return person_label_predicted, labels_to_names[person_label_predicted]
 
-response = client.label_detection(image=image)
-labels = response.label_annotations
-
-print('Labels')
-for label in labels:
-    print(label.description)
