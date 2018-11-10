@@ -15,7 +15,7 @@ while True:
     if not data:
         break
 
-    print('user - ', addr, ' send - ', str(data))
+    print('user - ', addr, ' send - ', data)
     conn.send(data.upper())
 
 conn.close()
