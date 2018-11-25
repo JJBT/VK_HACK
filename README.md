@@ -1,2 +1,2 @@
-# VK_HACK
+# VK HACKATHON 2018
 Moscow Philharmonic Track
